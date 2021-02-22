@@ -67,10 +67,6 @@ app.use(
   })
 );
 
-app.get("/try", (req, res) => {
-  res.send("working!!!")
-})
-
 const index = require('./routes/index');
 app.use('/', index);
 
