@@ -63,9 +63,13 @@ app.use(
   cors({
     credentials: true,
     origin: [process.env.CLIENT_HOSTNAME], 
-    //origin: ['https://watermelon-party.herokuapp.com'], //where the requests come from, is the url of the frontend. The Backend must allow FrontEnd.
+    //origin: ['https://watermelon-jams.herokuapp.com'], //where the requests come from, is the url of the frontend. The Backend must allow FrontEnd.
   })
 );
+
+app.get("/try", (req, res) => {
+  res.send("working!!!")
+})
 
 const index = require('./routes/index');
 app.use('/', index);
