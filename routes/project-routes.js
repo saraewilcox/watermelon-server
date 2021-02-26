@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const { format } = require('morgan');
 const Quiz = require('../models/Quiz');
 const SpotifyWebAPI = require('spotify-web-api-node');
+var { getUserPlaylists } = require('../utils/getAll');
 
 //Route to create quiz
 
@@ -133,6 +134,21 @@ router.post('/quiz/:code/playlist', (req, res) => {
         console.log('this is the error', err.message);
       });
   });
+});
+
+router.get('/user-playlists', async (req, res, next) => {
+  spotifyAPI.setAccessToken(access_token);
+  let userplaylists = [];
+  try {
+      for await (let userplaylist of getUserPlaylists(access_token)) {
+          userplaylists.push(userplaylist);
+      }
+
+      res.status(200).send(userplaylists);
+  } catch (err) {
+      console.error(err);
+      res.status(err.statusCode).send('Something went wrong');
+  }
 });
 
 module.exports = router;

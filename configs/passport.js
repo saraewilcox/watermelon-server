@@ -63,7 +63,7 @@ passport.use(
             refreshToken,
             expiresIn,
             displayName: profile.displayName,
-            imgURL: (profile.images[0] && profile.images[0].url) || '',
+            // imgURL: (profile.images[0] && profile.images[0].url) || '',
           });
         } else {
           user.accessToken = accessToken;
