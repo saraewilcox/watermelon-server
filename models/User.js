@@ -3,8 +3,6 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema (
   {
-    username: String,
-    password: String,
     spotifyId: String,
     accessToken: String,
     refreshToken: String,
