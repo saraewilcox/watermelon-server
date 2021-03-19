@@ -107,8 +107,8 @@ router.get(
     failureRedirect: `${process.env.CLIENT_HOSTNAME}/login`,
   }),
   function (req, res) {
-    // Successful authentication, redirect home.
-    res.redirect(`${process.env.CLIENT_HOSTNAME}/quiz-creation`);
+    // Successful authentication, redirect to quiz creation.
+    res.redirect(`${process.env.CLIENT_HOSTNAME}/home`);
   }
 );
 
