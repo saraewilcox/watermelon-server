@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const { format } = require('morgan');
 const Quiz = require('../models/Quiz');
 const SpotifyWebAPI = require('spotify-web-api-node');
-var { getUserPlaylists } = require('../utils/getAll');
 
 //Route to create quiz
 
@@ -31,9 +30,6 @@ router.post('/quiz', (req, res) => {
       console.log(`Something went wrong, here is the error: ${err}`);
     });
 });
-
-//GET THE spotifyId AND DISPLAY ON FRONTEND FOR ROUTE TO USER'S PLAYLISTS?
-
 
 //Get the quiz code and display on frontend
 router.get('/quiz/:code', (req, res) => {
@@ -76,6 +72,7 @@ router.put('/quiz/:code/users', (req, res) => {
   );
 });
 
+//Post the songs and create the playlist
 router.post('/quiz/:code/playlist', (req, res) => {
   const code = req.params.code;
   const access_token = req.body.userToken;
@@ -97,7 +94,8 @@ router.post('/quiz/:code/playlist', (req, res) => {
 
     songs.forEach((song) => {
       if (song === '') { (song = "Never Gonna Give You Up")}
-      getTrackPromises.push(spotifyAPI.searchTracks(song, { limit: 1 }).then(data => data.body.tracks.items))
+      getTrackPromises.push(spotifyAPI.searchTracks(song, { limit: 1 })
+      .then(data => data.body.tracks.items))
     });
 
     Promise.all(getTrackPromises)
@@ -138,69 +136,5 @@ router.post('/quiz/:code/playlist', (req, res) => {
       });
   });
 });
-
-router.get('/user-playlists', async (req, res, next) => {
-  spotifyAPI.setAccessToken(access_token);
-  let userplaylists = [];
-  try {
-      for await (let userplaylists of getUserPlaylists(access_token)) {
-          userplaylists.push(userplaylists);
-      }
-      console.log(userplaylists)
-      res.status(200).send(userplaylists);
-  } catch (err) {
-      console.error(err);
-      res.status(err.statusCode).send('Something went wrong');
-  }
-});
-
-// router.get('/user-playlists', async (req, res) => {
-//   let userplaylists = [];
-//   if(!spotifyAPI.getAccessToken()){
-//       await authenticate();
-//   }
-//   try {
-//       spotifyAPI.getUserPlaylists(req.params.user)
-//       .then((data) => {
-//         console.log('userplaylists: ', data)
-//         userplaylists = data.map((data) => {
-//           console.log('these are userplaylists: ',data.map(x => x.uri))
-//           return {
-//             name: data[0].name,
-//             href: data[0].href,
-//             uri: data[0].uri,
-//     };
-//   });
-//       res.json(userplaylists);
-//       }, (err) => {
-//           console.log('Something went wrong at getUserPlaylists!', err);
-//       });     
-//   } catch (error) {
-//       console.log('getUserPlaylists error:',error);
-//   }
-
-// });
-
-// router.get('/user-playlists', async (req, res) => {
-//   const userID = req.params.id;
-//   let userplaylists = data.body;
-//   const { access_token, limit, offset } = req.query
-
-//   if (!access_token) return res.status(400).json({ error: 'Required query parameter \'access_token\' not provided' });
-//   spotifyAPI.setAccessToken(access_token);
-
-//   let optQueryParams = {};
-//   if (limit) optQueryParams.limit = limit;
-//   if (offset) optQueryParams.offset = offset;
-
-//   spotifyApi.getUserPlaylists(userID, optQueryParams).then(
-//       (data) => {
-//           res.json(userplaylists);
-//       },
-//       (err) => {
-//           res.json(err);
-//       }
-//   );
-// });
 
 module.exports = router;
